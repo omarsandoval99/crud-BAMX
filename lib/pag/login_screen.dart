@@ -121,9 +121,14 @@ class _LoginForm extends StatelessWidget {
                         ListaLogin.add(login);
                       });
                       bool encontrado = false;
+
                       for (var i = 0; i < ListaLogin.length; i++) {
-                        if ((ListaLogin[i].correo.compareTo(loginForm.email)) ==
-                            0) {
+                        int Vcorreo =
+                            ListaLogin[i].correo.compareTo(loginForm.email);
+                        int Vpassword = ListaLogin[i]
+                            .password
+                            .compareTo(loginForm.password);
+                        if ((Vcorreo == 0) && (Vpassword == 0)) {
                           encontrado = true;
                           Navigator.push(
                               context,
@@ -133,7 +138,7 @@ class _LoginForm extends StatelessWidget {
                       }
 
                       if (!encontrado) {
-                        Eliminar(context);
+                        Alerta(context);
                       }
 
                       loginForm.isLoading = false;
@@ -143,7 +148,7 @@ class _LoginForm extends StatelessWidget {
     );
   }
 
-  Eliminar(BuildContext context) {
+  Alerta(BuildContext context) {
     showDialog(
         context: context,
         builder: (_) => const AlertDialog(

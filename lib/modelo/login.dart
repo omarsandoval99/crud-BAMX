@@ -6,6 +6,6 @@ class Login {
 
   factory Login.fromMap(Map<String, dynamic> json) => Login(
         correo: (json["correo"]),
-        password: (json["clave"].toString()),
+        password: (json["password"].toString()),
       );
 }
