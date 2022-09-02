@@ -1,8 +1,11 @@
 import 'package:crud/imports.dart';
+import 'package:crud/modelo/login.dart';
 import 'package:crud/servicios/login_form_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:crud/widgets/widgets.dart';
 import 'package:crud/ui/input_decorations.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -103,13 +106,49 @@ class _LoginForm extends StatelessWidget {
                       await Future.delayed(const Duration(seconds: 2));
 
                       // TODO: validar si el login es correcto
-                      loginForm.isLoading = false;
 
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (_) => const AppState()));
+                      List<Login> ListaLogin = [];
+                      final String _UrlBase =
+                          'crudbamx-default-rtdb.firebaseio.com';
+                      final url = Uri.https(_UrlBase, 'login.json');
+                      final respuesta = await http.get(url);
+                      final Map<String, dynamic> list =
+                          jsonDecode(respuesta.body);
+
+                      list.forEach((key, value) {
+                        final login = Login.fromMap(value);
+
+                        ListaLogin.add(login);
+                      });
+                      bool encontrado = false;
+                      for (var i = 0; i < ListaLogin.length; i++) {
+                        if ((ListaLogin[i].correo.compareTo(loginForm.email)) ==
+                            0) {
+                          encontrado = true;
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const AppState()));
+                        }
+                      }
+
+                      if (!encontrado) {
+                        Eliminar(context);
+                      }
+
+                      loginForm.isLoading = false;
                     })
         ],
       ),
     );
+  }
+
+  Eliminar(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_) => const AlertDialog(
+              title: Text("Alerta"),
+              content: Text("Datos incorrectos"),
+            ));
   }
 }
