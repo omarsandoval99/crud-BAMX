@@ -63,18 +63,4 @@ class Serv_Beneficiarios extends ChangeNotifier {
 
     notifyListeners();
   }
-
-  Future MetodoGetLogin(String email, String password) async {
-    bool verificacion = false;
-    final url = Uri.https(_UrlBase, 'login.json');
-    final respuesta = await http.get(url);
-    final Map<String, dynamic> list = jsonDecode(respuesta.body);
-
-    list.forEach((key, value) {
-      print(value);
-    });
-
-    notifyListeners();
-    return {verificacion};
-  }
 }
