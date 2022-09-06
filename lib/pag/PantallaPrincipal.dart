@@ -1,21 +1,11 @@
 import 'dart:convert';
-
+import 'package:crud/provider/provider.dart';
 import 'package:crud/imports.dart';
+import 'package:crud/modelo/user.dart';
+import 'package:crud/servicios/servicios_beneficiarios.dart';
 import 'package:provider/provider.dart';
 
 bool eliminarVerdadero = false;
-
-class AppState extends StatelessWidget {
-  const AppState({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => Serv_Beneficiarios())],
-      child: const PantallaPrincipal("Beneficiarios"),
-    );
-  }
-}
 
 class PantallaPrincipal extends StatefulWidget {
   final String _titulo;
@@ -26,12 +16,6 @@ class PantallaPrincipal extends StatefulWidget {
 }
 
 class _PantallaPrincipalState extends State<PantallaPrincipal> {
-  /* List<Beneficiarios> clientes = [
-    Beneficiarios(nombre: 'jose', telefono: '1213214214'),
-    Beneficiarios(nombre: 'Omar', telefono: '6681706387'),
-    Beneficiarios(nombre: 'pepe', telefono: '16162736')
-  ];*/
-
   @override
   Widget build(BuildContext context) {
     final ServBeneficiario = Provider.of<Serv_Beneficiarios>(context);

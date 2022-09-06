@@ -1,11 +1,10 @@
 import 'package:crud/imports.dart';
-import 'package:crud/modelo/login.dart';
+import 'package:crud/modelo/user.dart';
 import 'package:crud/servicios/login_form_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:crud/widgets/widgets.dart';
 import 'package:crud/ui/input_decorations.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:crud/servicios/User_Service.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -106,26 +105,45 @@ class _LoginForm extends StatelessWidget {
                       await Future.delayed(const Duration(seconds: 2));
 
                       // TODO: validar si el login es correcto
+                      final ServBeneficiario = Provider.of<Serv_Beneficiarios>(
+                          context,
+                          listen: false);
 
-                      Login listlogin = Login(
-                          correo: loginForm.email,
-                          password: loginForm.password);
+                      ServBeneficiario.metodoUser(
+                              loginForm.email, loginForm.password)
+                          .then((value) => {
+                                if (ServBeneficiario.UsuarioLogeado.isEmpty)
+                                  {Alerta(context)}
+                                else
+                                  {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                const PantallaPrincipal(
+                                                    "Beneficiarios")))
+                                  }
+                              });
 
-                      //www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key='
+                      loginForm.isLoading = false;
+                    })
+        ],
+      ),
+    );
+  }
 
-                      final String _UrlBase = 'identitytoolkit.googleapis.com';
-                      final url = Uri.https(
-                          _UrlBase,
-                          '/v1/accounts:signInWithPassword',
-                          {'key': 'AIzaSyBrdAiVXKnSyBLiRPZgMX7B4tly8TBqVqc'});
-                      print(url);
+  Alerta(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_) => const AlertDialog(
+              title: Text("Alerta"),
+              content: Text("Datos incorrectos"),
+            ));
+  }
+}
 
-                      final resp =
-                          await http.post(url, body: listlogin.toJson());
 
-                      print(resp.body);
-
-                      /*        
+  /*        
                       List<Login> ListaLogin = [];
                       final String _UrlBase =
                           'crudbamx-default-rtdb.firebaseio.com';
@@ -160,19 +178,3 @@ class _LoginForm extends StatelessWidget {
                         Alerta(context);
                       }
 */
-                      loginForm.isLoading = false;
-                    })
-        ],
-      ),
-    );
-  }
-
-  Alerta(BuildContext context) {
-    showDialog(
-        context: context,
-        builder: (_) => const AlertDialog(
-              title: Text("Alerta"),
-              content: Text("Datos incorrectos"),
-            ));
-  }
-}
